@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 
 
@@ -13,7 +14,9 @@ import time
 
 service = Service()
 options = webdriver.ChromeOptions()
-options.headless = True
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument("--window-size=1920,1080")
 driver = webdriver.Chrome(service=service, options=options)
 driver.get('https://payme.uz/login')
 phone_number = ''                                             #НОМЕР ТЕЛЕФОНА
@@ -39,7 +42,8 @@ def run_browser():
 		elem = driver.find_element(By.ID, 'password')
 		elem.send_keys(password + Keys.RETURN)
 
-		WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID,  'login-submit'))).click()
+		btn = driver.find_element(By.ID,  'login-submit')
+		driver.execute_script("arguments[0].click();", btn)
 
 		code = input('SMS CODE: ')
 
@@ -47,10 +51,14 @@ def run_browser():
 		elem.send_keys(code + Keys.RETURN)
 
 
-		WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID,  'login-submit'))).click()
+		btn = driver.find_element(By.ID,  'login-submit')
+		driver.execute_script("arguments[0].click();", btn)
+
+		btn = driver.find_element(By.XPATH, "//span[text() = 'Мониторинг платежей']")
+		driver.execute_script("arguments[0].click();", btn)
 
 		
-		time.sleep(10)
+		time.sleep(3)
 
 	except Exception as e:
 		run_browser()

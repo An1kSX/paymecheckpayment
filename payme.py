@@ -54,12 +54,8 @@ def set_payment_date(user_id, date):
 def payme(user_id, money):
 	new_user(user_id)
 ################# Переходим в мониторинг платежей ###################
-	try:
-		driver.get('https://payme.uz/cabinet/history')
-
-	except Exception as e:
-		print(e)
-		return -1
+	btn = driver.find_element(By.XPATH, "//span[text() = 'Мониторинг платежей']")
+	driver.execute_script("arguments[0].click();", btn)
 
 #####################################################################
 
@@ -70,17 +66,21 @@ def payme(user_id, money):
 		yesterday = datetime.now() - timedelta(1)
 		yesterday = yesterday.strftime('%d.%m.%Y')
 
-		WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//span[text() = 'Фильтр']"))).click()
+		btn = driver.find_element(By.XPATH, "//span[text() = 'Фильтр']")
+		driver.execute_script("arguments[0].click();", btn)
+
 
 		WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, 'start'))).clear()
 		driver.find_element(By.ID, 'start').send_keys(yesterday + Keys.RETURN)
 
+		btn = driver.find_element(By.ID, 'operation')
+		driver.execute_script("arguments[0].click();", btn)
 
-		WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, 'operation'))).click()
+		btn = driver.find_element(By.XPATH, "//option[text() = 'Поступления']")
+		driver.execute_script("arguments[0].click();", btn)
 
-		WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//option[text() = 'Поступления']"))).click()
-
-		WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//span[text() = 'Применить']"))).click()
+		btn = driver.find_element(By.XPATH, "//span[text() = 'Применить']")
+		driver.execute_script("arguments[0].click();", btn)
 
 	except Exception as e:
 		print(e)
